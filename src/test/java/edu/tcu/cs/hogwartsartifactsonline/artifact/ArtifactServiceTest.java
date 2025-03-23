@@ -15,6 +15,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 
 import edu.tcu.cs.hogwartsartifactsonline.wizard.Wizard;
 
@@ -33,9 +35,25 @@ public class ArtifactServiceTest {
     @InjectMocks // The Mockito mock objects for ArtifactRepository and IdWorker will be injected into artifactService.
     ArtifactService artifactService;
 
+    List<Artifact> artifacts;
+
     @BeforeEach
     void setUp(){
+        Artifact a1 = new Artifact();
+        a1.setId("1250808601744904191");
+        a1.setName("Deluminator");
+        a1.setDescription("A Deluminator is a device invented by Albus Dumbledore that resembles a cigarette lighter. It is used to remove or absorb (as well as return) the light from any light source to provide cover to the user.");
+        a1.setImageUrl("imageUrl");
 
+        Artifact a2 = new Artifact();
+        a2.setId("1250808601744904192");
+        a2.setName("Invisibility Cloak");
+        a2.setDescription("An invisibility cloak is used to make the wearer invisible.");
+        a2.setImageUrl("imageUrl");
+
+        this.artifacts = new ArrayList<>();
+        this.artifacts.add(a1);
+        this.artifacts.add(a2);
     }
 
     @AfterEach
@@ -95,5 +113,18 @@ public class ArtifactServiceTest {
                 .isInstanceOf(ArtifactNotFoundException.class)
                 .hasMessage("Could not find artifact with Id 1250808601744904192 :(");
         verify(this.artifactRepository, times(1)).findById("1250808601744904192");
+    }
+
+    @Test
+    void testFindAllSuccess() {
+        // Given
+        given(this.artifactRepository.findAll()).willReturn(this.artifacts);
+
+        // When
+        List<Artifact> actualArtifacts = this.artifactService.findAll();
+
+        // Then
+        assertThat(actualArtifacts.size()).isEqualTo(this.artifacts.size());
+        verify(this.artifactRepository, times(1)).findAll();
     }
 }
