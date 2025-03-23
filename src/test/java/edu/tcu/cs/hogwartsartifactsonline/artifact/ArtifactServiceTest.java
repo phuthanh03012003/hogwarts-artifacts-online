@@ -18,6 +18,7 @@ import java.util.Optional;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.tcu.cs.hogwartsartifactsonline.artifact.utils.IdWorker;
 import edu.tcu.cs.hogwartsartifactsonline.wizard.Wizard;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,6 +32,9 @@ public class ArtifactServiceTest {
 
     @Mock // @Mock defines a Mockito mock object for ArtifactRepository.
     ArtifactRepository artifactRepository;
+
+    @Mock
+    IdWorker idWorker;
 
     @InjectMocks // The Mockito mock objects for ArtifactRepository and IdWorker will be injected into artifactService.
     ArtifactService artifactService;
@@ -126,5 +130,27 @@ public class ArtifactServiceTest {
         // Then
         assertThat(actualArtifacts.size()).isEqualTo(this.artifacts.size());
         verify(this.artifactRepository, times(1)).findAll();
+    }
+
+    @Test
+    void testSaveSuccess() {
+        // Given
+        Artifact newArtifact = new Artifact();
+        newArtifact.setName("Artifact 3");
+        newArtifact.setDescription("Description...");
+        newArtifact.setImageUrl("ImageUrl...");
+
+        given(this.idWorker.nextId()).willReturn(123456L);
+        given(this.artifactRepository.save(newArtifact)).willReturn(newArtifact);
+
+        // When
+        Artifact savedArtifact = this.artifactService.save(newArtifact);
+
+        // Then
+        assertThat(savedArtifact.getId()).isEqualTo("123456");
+        assertThat(savedArtifact.getName()).isEqualTo(newArtifact.getName());
+        assertThat(savedArtifact.getDescription()).isEqualTo(newArtifact.getDescription());
+        assertThat(savedArtifact.getImageUrl()).isEqualTo(newArtifact.getImageUrl());
+        verify(this.artifactRepository, times(1)).save(newArtifact);
     }
 }
