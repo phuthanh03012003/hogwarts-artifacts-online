@@ -229,5 +229,6 @@ public class ArtifactServiceTest {
 
         // Then
         verify(this.artifactRepository, times(1)).findById("1250808601744904192");
+
     }
 }

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 spring:
   profiles:
     active: dev # By default, the active profile is "dev". During production, it will be replaced to "prod" due to Azure's environment variables.
@@ -56,3 +57,13 @@ info:
     links:
       youtube: https://youtube.com/@BingyangWei
       github: https://github.com/Washingtonwei/hogwarts-artifacts-online
+=======
+spring:
+  datasource:
+    url: jdbc:h2:mem:hogwarts
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    show-sql: true
+>>>>>>> main
