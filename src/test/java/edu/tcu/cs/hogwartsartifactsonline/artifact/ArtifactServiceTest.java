@@ -1,8 +1,5 @@
 package edu.tcu.cs.hogwartsartifactsonline.artifact;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
 import org.hibernate.ObjectNotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -152,5 +149,85 @@ public class ArtifactServiceTest {
         assertThat(savedArtifact.getDescription()).isEqualTo(newArtifact.getDescription());
         assertThat(savedArtifact.getImageUrl()).isEqualTo(newArtifact.getImageUrl());
         verify(this.artifactRepository, times(1)).save(newArtifact);
+    }
+
+    @Test
+    void testUpdateSuccess() {
+        // Given
+        Artifact oldArtifact = new Artifact();
+        oldArtifact.setId("1250808601744904192");
+        oldArtifact.setName("Invisibility Cloak");
+        oldArtifact.setDescription("An invisibility cloak is used to make the wearer invisible.");
+        oldArtifact.setImageUrl("ImageUrl");
+
+        Artifact update = new Artifact();
+        // update.setId("1250808601744904192");
+        update.setName("Invisibility Cloak");
+        update.setDescription("A new description.");
+        update.setImageUrl("ImageUrl");
+
+        given(this.artifactRepository.findById("1250808601744904192")).willReturn(Optional.of(oldArtifact));
+        given(this.artifactRepository.save(oldArtifact)).willReturn(oldArtifact);
+
+        // When
+        Artifact updatedArtifact = this.artifactService.update("1250808601744904192", update);
+
+        // Then
+        assertThat(updatedArtifact.getId()).isEqualTo("1250808601744904192");
+        assertThat(updatedArtifact.getDescription()).isEqualTo(update.getDescription());
+        verify(this.artifactRepository, times(1)).findById("1250808601744904192");
+        verify(this.artifactRepository, times(1)).save(oldArtifact);
+    }
+
+    @Test
+    void testUpdateNotFound() {
+        // Given
+        Artifact update = new Artifact();
+        update.setName("Invisibility Cloak");
+        update.setDescription("A new description.");
+        update.setImageUrl("ImageUrl");
+
+        given(this.artifactRepository.findById("1250808601744904192")).willReturn(Optional.empty());
+
+        // When
+        assertThrows(ObjectNotFoundException.class, () -> {
+            this.artifactService.update("1250808601744904192", update);
+        });
+
+        // Then
+        verify(this.artifactRepository, times(1)).findById("1250808601744904192");
+    }
+
+    @Test
+    void testDeleteSuccess() {
+        // Given
+        Artifact artifact = new Artifact();
+        artifact.setId("1250808601744904192");
+        artifact.setName("Invisibility Cloak");
+        artifact.setDescription("An invisibility cloak is used to make the wearer invisible.");
+        artifact.setImageUrl("ImageUrl");
+
+        given(this.artifactRepository.findById("1250808601744904192")).willReturn(Optional.of(artifact));
+        doNothing().when(this.artifactRepository).deleteById("1250808601744904192");
+
+        // When
+        this.artifactService.delete("1250808601744904192");
+
+        // Then
+        verify(this.artifactRepository, times(1)).deleteById("1250808601744904192");
+    }
+
+    @Test
+    void testDeleteNotFound() {
+        // Given
+        given(this.artifactRepository.findById("1250808601744904192")).willReturn(Optional.empty());
+
+        // When
+        assertThrows(ObjectNotFoundException.class, () -> {
+            this.artifactService.delete("1250808601744904192");
+        });
+
+        // Then
+        verify(this.artifactRepository, times(1)).findById("1250808601744904192");
     }
 }
