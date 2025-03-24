@@ -1,6 +1,8 @@
 package edu.tcu.cs.hogwartsartifactsonline.artifact;
 
-import org.hibernate.ObjectNotFoundException;
+import edu.tcu.cs.hogwartsartifactsonline.artifact.utils.IdWorker;
+import edu.tcu.cs.hogwartsartifactsonline.system.exception.ObjectNotFoundException;
+import edu.tcu.cs.hogwartsartifactsonline.wizard.Wizard;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,14 +11,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.context.ActiveProfiles;
 
-import java.util.Optional;
 import java.util.ArrayList;
 import java.util.List;
-
-import edu.tcu.cs.hogwartsartifactsonline.artifact.utils.IdWorker;
-import edu.tcu.cs.hogwartsartifactsonline.wizard.Wizard;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -24,8 +22,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
+// For JUnit 5, we need to use @ExtendWith.
 @ExtendWith(MockitoExtension.class)
-public class ArtifactServiceTest {
+class ArtifactServiceTest {
 
     @Mock // @Mock defines a Mockito mock object for ArtifactRepository.
     ArtifactRepository artifactRepository;
@@ -38,8 +37,9 @@ public class ArtifactServiceTest {
 
     List<Artifact> artifacts;
 
+
     @BeforeEach
-    void setUp(){
+    void setUp() {
         Artifact a1 = new Artifact();
         a1.setId("1250808601744904191");
         a1.setName("Deluminator");
@@ -58,12 +58,11 @@ public class ArtifactServiceTest {
     }
 
     @AfterEach
-    void tearDown(){
-
+    void tearDown() {
     }
 
     @Test
-    void testFindByIdSuccess(){
+    void testFindByIdSuccess() {
         // Given. Arrange inputs and targets. Define the behavior of Mock object artifactRepository.
         /*
         "id": "1250808601744904192",
@@ -111,7 +110,7 @@ public class ArtifactServiceTest {
 
         // Then
         assertThat(thrown)
-                .isInstanceOf(ArtifactNotFoundException.class)
+                .isInstanceOf(ObjectNotFoundException.class)
                 .hasMessage("Could not find artifact with Id 1250808601744904192 :(");
         verify(this.artifactRepository, times(1)).findById("1250808601744904192");
     }
@@ -229,6 +228,6 @@ public class ArtifactServiceTest {
 
         // Then
         verify(this.artifactRepository, times(1)).findById("1250808601744904192");
-
     }
+
 }
