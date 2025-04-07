@@ -6,10 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-public class HogwartsArtifactsOnlineApplication {
+public class HogwartsartifactsonlineApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(HogwartsArtifactsOnlineApplication.class, args);
+        SpringApplication.run(HogwartsartifactsonlineApplication.class, args);
     }
 
     @Bean
